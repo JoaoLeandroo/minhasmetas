@@ -1,6 +1,7 @@
 import AsideBar from "@/components/others/AsideBar";
 import ContainerMain from "@/components/others/ContainerMain";
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import ButtonAddMetas from "@/components/others/ButtonAddMetas";
 
 const Dashboard = () => {
     return ( 
@@ -11,10 +12,10 @@ const Dashboard = () => {
 
                 {/* Conteudo principal */}
                 <main className="w-full">
-                    <Card className="w-full h-[400px] rounded">
-                        <CardHeader>
-                            teste
-                        </CardHeader>
+                    <Card className="w-full h-[400px] flex items-center justify-center rounded">
+                        <CardContent>
+                            <ButtonAddMetas/>
+                        </CardContent>
                     </Card>
                 </main>
             </div>
