@@ -118,7 +118,7 @@ export const LoginUser = async (
   );
 
   const cookieToken = await cookies()
-  cookieToken.set('teste', token)
+  cookieToken.set('metas_token', token)
 
   redirect("/dashboard");
 };
