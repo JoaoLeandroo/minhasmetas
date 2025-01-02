@@ -5,23 +5,40 @@ import { redirect } from "next/navigation";
 import { sign } from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-export default async function registerUser(_prev: any, formDate: FormData) {
-  const entries = Array.from(formDate.entries());
-  const data = Object.fromEntries(entries) as {
-    name: string;
-    email: string;
-    password: string;
-  };
-  console.log(data);
+const RegisterSchema = z.object({
+  name: z.string().min(3, { message: "Informe um nome válido." }),
+  email: z
+    .string()
+    .email({ message: "Informe um email valido." })
+    .transform((email) => email.toLowerCase()),
+  password: z
+    .string()
+    .min(6, { message: "A senha deve ter no minimo 6 caracters." }),
+});
 
-  if (!data.email || !data.name || !data.password) {
+type RegisterUserError = {
+  name?: string[];
+  email?: string[];
+  password?: string[];
+};
+
+export default async function registerUser(
+  _prev: any,
+  formData: FormData
+): Promise<{ Error?: RegisterUserError }> {
+  const validateFields = RegisterSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validateFields.success) {
     return {
-      message: "Preencha todos os campos.",
-      success: false,
+      Error: validateFields.error.flatten().fieldErrors,
     };
   }
 
-  const emailLowerCase = data.email.toLowerCase();
+  const { name, email, password } = validateFields.data;
+
+  const emailLowerCase = email.toLowerCase();
 
   const verifyUser = await db.usuario.findUnique({
     where: {
@@ -31,24 +48,22 @@ export default async function registerUser(_prev: any, formDate: FormData) {
   // verificar se o usuario já está cadastrado
   if (verifyUser) {
     return {
-      message: "Usuário já cadastrado.",
-      success: false,
+      Error: {
+        email: ["Email já cadastrado."],
+      },
     };
   }
 
   // cadastrar usuario
   await db.usuario.create({
     data: {
-      name: data.name,
+      name: name,
       email: emailLowerCase,
-      password: data.password,
+      password: password,
     },
   });
 
-  return {
-    message: "Usuário cadastrado com sucesso!",
-    success: true,
-  };
+  return {}
 }
 
 const LoginSchema = z.object({
@@ -117,8 +132,8 @@ export const LoginUser = async (
     }
   );
 
-  const cookieToken = await cookies()
-  cookieToken.set('metas_token', token)
+  const cookieToken = await cookies();
+  cookieToken.set("metas_token", token);
 
   redirect("/dashboard");
 };
