@@ -63,7 +63,7 @@ export default async function registerUser(
     },
   });
 
-  return {}
+  return {};
 }
 
 const LoginSchema = z.object({
@@ -137,3 +137,5 @@ export const LoginUser = async (
 
   redirect("/dashboard");
 };
+
+export const verifyTokenUser = async () => {};

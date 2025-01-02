@@ -12,7 +12,12 @@ import {
 } from "@/components/ui/sheet"
 import ButtonLogout from "./ButtonLogout";
 
-const ButtonMenuAside = () => {
+interface Props {
+  name: string | null;
+  email: string | null;
+}
+
+const ButtonMenuAside = ({name, email}: Props) => {
     return ( 
         <Sheet>
         <SheetTrigger asChild>
@@ -20,9 +25,9 @@ const ButtonMenuAside = () => {
         </SheetTrigger>
         <SheetContent side={'left'} className="flex flex-col justify-between">
           <SheetHeader className="text-left">
-            <SheetTitle className="text-xs text-zinc-500">John Doe</SheetTitle>
+            <SheetTitle className="text-xs text-zinc-500">{name}</SheetTitle>
             <SheetDescription className="text-xs text-zinc-500">
-              johndoexample@example.com
+              {email}
             </SheetDescription>
           </SheetHeader>
 

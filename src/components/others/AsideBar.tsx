@@ -3,16 +3,21 @@ import ButtonMenuAside from "./ButtonMenuAsider";
 import Link from "next/link";
 import ButtonLogout from "./ButtonLogout";
 
-const AsideBar = () => {
+interface Props {
+  name: string | null;
+  email: string | null;
+}
+
+const AsideBar = ({name, email}: Props) => {
   return (
     <aside>
       <div className="hidden md:flex">
         {/* DESKTOP */}
-        <Card className="rounded h-[400px] flex flex-col justify-between">
+        <Card className="rounded min-w-[250px] max-w-[280px] h-[400px] flex flex-col justify-between">
           <CardHeader>
             <div>
-              <p className="text-xs text-zinc-500">John Doe</p>
-              <p className="text-xs text-zinc-500">johndoexample@example.com</p>
+              <p className="text-xs text-zinc-500">{name}</p>
+              <p className="text-xs text-zinc-500">{email}</p>
             </div>
           </CardHeader>
 
@@ -32,7 +37,7 @@ const AsideBar = () => {
 
       <div className="flex md:hidden">
         {/* MOBILE */}
-        <ButtonMenuAside />
+        <ButtonMenuAside name={name} email={email}/>
       </div>
     </aside>
   );
