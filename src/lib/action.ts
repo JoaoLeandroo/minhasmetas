@@ -1,7 +1,9 @@
 "use server";
 import db from "./db";
-import { z } from "zod"
-import { redirect } from "next/navigation"
+import { z } from "zod";
+import { redirect } from "next/navigation";
+import { sign } from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export default async function registerUser(_prev: any, formDate: FormData) {
   const entries = Array.from(formDate.entries());
@@ -49,52 +51,74 @@ export default async function registerUser(_prev: any, formDate: FormData) {
   };
 }
 
-
 const LoginSchema = z.object({
-    email: z.string().email({message: "Informe um email valido."}).transform(email => email.toLowerCase()),
-    password: z.string().min(6, {message: "A senha deve ter no minimo 6 caracters."}),
-})
+  email: z
+    .string()
+    .email({ message: "Informe um email valido." })
+    .transform((email) => email.toLowerCase()),
+  password: z
+    .string()
+    .min(6, { message: "A senha deve ter no minimo 6 caracters." }),
+});
 
 type LoginUserError = {
-    email?: string[];
-    password?: string[];
+  email?: string[];
+  password?: string[];
 };
 
-export const LoginUser = async (_prevState: any, formData: FormData): Promise<{ Error?: LoginUserError }> => {
-    const validateFields = LoginSchema.safeParse(
-        Object.fromEntries(formData.entries())
-      );
+export const LoginUser = async (
+  _prevState: any,
+  formData: FormData
+): Promise<{ Error?: LoginUserError }> => {
+  const validateFields = LoginSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
 
-      if (!validateFields.success) {
-        return {
-          Error: validateFields.error.flatten().fieldErrors,
-        };
-      }
+  if (!validateFields.success) {
+    return {
+      Error: validateFields.error.flatten().fieldErrors,
+    };
+  }
 
-      const { email, password } = validateFields.data;
+  const { email, password } = validateFields.data;
 
-      const verifyUser = await db.usuario.findUnique({
-        where: {email}
-      })
+  const verifyUser = await db.usuario.findUnique({
+    where: { email },
+  });
 
-      if(!verifyUser) {
-        return {
-            Error: {
-                email: ["Email ou senha incorretos."],
-                password: ["Email ou senha incorretos."]
-            }
-        }
-      }
+  if (!verifyUser) {
+    return {
+      Error: {
+        email: ["Email ou senha incorretos."],
+        password: ["Email ou senha incorretos."],
+      },
+    };
+  }
 
-      if(verifyUser.password != password) {
-        return {
-            Error: {
-                email: ["Email ou senha incorretos."],
-                password: ["email ou senha incorretos."]
-            }
-        }
-      }
+  if (verifyUser.password != password) {
+    return {
+      Error: {
+        email: ["Email ou senha incorretos."],
+        password: ["email ou senha incorretos."],
+      },
+    };
+  }
 
-      redirect("/dashboard")
+  const token = sign(
+    {
+      id: verifyUser.id,
+      name: verifyUser.name,
+      email: verifyUser.email,
+    },
+    process.env.JWT_SECRET as string,
+    {
+      subject: verifyUser.id,
+      expiresIn: "30d",
+    }
+  );
 
-}
+  const cookieToken = await cookies()
+  cookieToken.set('teste', token)
+
+  redirect("/dashboard");
+};
