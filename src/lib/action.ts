@@ -175,3 +175,18 @@ export const trainingUser = async (formData: FormData) => {
 
   redirect("/dashboard/metas")
 }
+
+// exibir treinos
+export const loadResults = async (id: string) => {
+
+  const infos = await db.meta.findMany({
+      where: {
+          usuarioId: id
+      },
+      orderBy: {
+        createAt: "desc"
+      }
+  })
+
+  return infos
+}
