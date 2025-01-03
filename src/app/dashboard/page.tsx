@@ -10,12 +10,14 @@ import { useState, useEffect } from "react";
 type TokenPayload = {
   email: string;
   name: string;
+  id: string;
 };
 
 const Dashboard = () => {
 
   const [nome, setNome] = useState("")
   const [email, setEmail] = useState<string | null>("")
+  const [id, setId] = useState("")
 
   useEffect(() => {
     const token = Cookies.get("metas_token"); 
@@ -29,6 +31,7 @@ const Dashboard = () => {
       if (decoded && typeof decoded !== "string") {
         setEmail(decoded.email);
         setNome(decoded.name);
+        setId(decoded.id)
       } else {
         console.error("Token inválido ou sem payload");
       }
@@ -47,10 +50,9 @@ const Dashboard = () => {
         <main className="w-full">
           <Card className="w-full h-[400px] flex items-center justify-center rounded">
             <CardContent>
-              <ButtonAddMetas />
+              <ButtonAddMetas id={id}/>
             </CardContent>
 
-            <div>teste</div>
           </Card>
         </main>
       </div>

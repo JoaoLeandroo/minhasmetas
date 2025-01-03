@@ -66,6 +66,7 @@ export default async function registerUser(
   return {};
 }
 
+// LOGAR USUARIO
 const LoginSchema = z.object({
   email: z
     .string()
@@ -138,4 +139,39 @@ export const LoginUser = async (
   redirect("/dashboard");
 };
 
-export const verifyTokenUser = async () => {};
+// ADICIONAR TREINOS
+
+export const trainingUser = async (formData: FormData) => {
+
+  const idUser = formData.get("id")?.toString()
+  const idTreino = formData.get("treino")?.toString()
+  const idLocal = formData.get("local")?.toString()
+  const idEnergia = Number(formData.get("energia")?.toString())
+  const idDesc = formData.get("description")?.toString()
+
+  if(!idUser || !idTreino || !idLocal || !idEnergia || !idDesc) {
+    throw new Error("Todos os campos precisam ser enviados!")
+  }
+
+  const verifyUser = db.usuario.findFirst({
+    where: {
+      id: idUser
+    }
+  })
+
+  if(!verifyUser) {
+    throw new Error("USUARIO NAO EXISTE")
+  }
+
+  await db.meta.create({
+    data: {
+      usuarioId: idUser,
+      treino: idTreino,
+      local: idLocal,
+      energia: idEnergia,
+      desc: idDesc,
+    }
+  })
+
+  redirect("/dashboard/metas")
+}

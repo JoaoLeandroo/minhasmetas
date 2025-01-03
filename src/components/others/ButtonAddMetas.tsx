@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import FormAddMetas from "../forms/FormAddMetas";
 
-const ButtonAddMetas = () => {
+interface Props {
+  id: string;
+}
+
+const ButtonAddMetas = ({id}: Props) => {
   return (
     <div>
       <Dialog>
@@ -29,7 +33,7 @@ const ButtonAddMetas = () => {
           </DialogHeader>
 
           <div>
-            <FormAddMetas />
+            <FormAddMetas id={id}/>
           </div>
         </DialogContent>
       </Dialog>
