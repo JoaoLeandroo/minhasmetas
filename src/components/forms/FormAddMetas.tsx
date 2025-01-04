@@ -3,13 +3,17 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import Form from "next/form";
 import { trainingUser } from "@/lib/action";
+import { useActionState } from "react";
 interface Props {
   id: string;
 }
 
 const FormAddMetas = ({ id }: Props) => {
+
+  const [state, formAction, isPedding] = useActionState(trainingUser, null)
   return (
-    <Form action={trainingUser} className="flex flex-col gap-y-3">
+    <Form action={formAction} className="flex flex-col gap-y-3">
+      {state}
       <Input type="hidden" name="id" id="id" value={id} />
       {/* Tipo de treino */}
       <Label htmlFor="treino" className="flex flex-col gap-y-1">
@@ -65,7 +69,7 @@ const FormAddMetas = ({ id }: Props) => {
         />
       </Label>
 
-      <Button type="submit" className="mt-2">
+      <Button disabled={isPedding} type="submit" className="mt-2">
         Enviar
       </Button>
     </Form>

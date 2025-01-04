@@ -141,7 +141,7 @@ export const LoginUser = async (
 
 // ADICIONAR TREINOS
 
-export const trainingUser = async (formData: FormData) => {
+export const trainingUser = async (_prev: any, formData: FormData) => {
 
   const idUser = formData.get("id")?.toString()
   const idTreino = formData.get("treino")?.toString()
