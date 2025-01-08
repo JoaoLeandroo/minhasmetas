@@ -2,6 +2,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import ButtonMenuAside from "./ButtonMenuAsider";
 import Link from "next/link";
 import ButtonLogout from "./ButtonLogout";
+import { SlEnergy } from "react-icons/sl";
 
 interface Props {
   name: string | null;
@@ -22,9 +23,9 @@ const AsideBar = ({name, email}: Props) => {
           </CardHeader>
 
           <CardContent>
-            <div>
-              <Link href={"/dashboard/metas"} className="font-bold">
-                Suas metas
+            <div className="bg-blue-600 text-white hover:opacity-80 transition duration-200 rounded-full shadow-md border border-zinc-300">
+              <Link href={"/dashboard/metas"} className="font-bold p-2 flex gap-x-1 items-center justify-center">
+                <SlEnergy /> Suas metas
               </Link>
             </div>
           </CardContent>
